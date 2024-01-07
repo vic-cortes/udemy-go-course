@@ -18,5 +18,10 @@
         "titleBar.inactiveBackground": "#226f7c99",
         "titleBar.inactiveForeground": "#e7e7e799"
     },
-    "peacock.color": "#226f7c"
+    "peacock.color": "#226f7c",
+    "[go]": {
+        "editor.insertSpaces": true,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "golang.go"
+    },
 }
