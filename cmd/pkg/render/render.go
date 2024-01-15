@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/vmcortesf/udemy-course/cmd/pkg/config"
+	"github.com/vmcortesf/udemy-course/cmd/pkg/models"
 )
 
 var app *config.AppConfig
@@ -16,7 +17,12 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
-func RenderTemplate(w http.ResponseWriter, tmpl string) {
+func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+	// TODO: Add all applicable data to the template data
+	return td
+}
+
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 
 	if app.UseCache {
@@ -33,7 +39,8 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 	}
 
 	buffer := new(bytes.Buffer)
-	_ = t.Execute(buffer, nil)
+	td = AddDefaultData(td)
+	_ = t.Execute(buffer, td)
 
 	_, err := buffer.WriteTo(w)
 

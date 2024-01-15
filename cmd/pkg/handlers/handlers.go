@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/vmcortesf/udemy-course/cmd/pkg/config"
+	"github.com/vmcortesf/udemy-course/cmd/pkg/models"
 	"github.com/vmcortesf/udemy-course/cmd/pkg/render"
 )
 
@@ -29,10 +30,16 @@ func NewHandlers(r *Repository) {
 
 // Home page handler
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "home.html")
+	render.RenderTemplate(w, "home.html", &models.TemplateData{})
+
 }
 
 // About page handler
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "about.html")
+	stringMap := make(map[string]string)
+	stringMap["test"] = "Hello, again."
+
+	render.RenderTemplate(w, "about.html", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }
