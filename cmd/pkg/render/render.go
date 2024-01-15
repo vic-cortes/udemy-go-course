@@ -6,39 +6,43 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+
+	"github.com/vmcortesf/udemy-course/cmd/pkg/config"
 )
 
-func RenderTemplate(w http.ResponseWriter, tmpl string) {
-	// Create Template cache
-	tc, err := createTemplateCache()
+var app *config.AppConfig
 
-	if err != nil {
-		log.Fatal(err)
+func NewTemplates(a *config.AppConfig) {
+	app = a
+}
+
+func RenderTemplate(w http.ResponseWriter, tmpl string) {
+	var tc map[string]*template.Template
+
+	if app.UseCache {
+		// Create Template cache
+		tc = app.TemplateCache
+	} else {
+		tc, _ = CreateTemplateCache()
 	}
 
-	// Get the template from the cache
 	t, ok := tc[tmpl]
 
 	if !ok {
-		log.Fatal(err)
+		log.Fatal("Could not render template")
 	}
 
 	buffer := new(bytes.Buffer)
+	_ = t.Execute(buffer, nil)
 
-	err = t.Execute(buffer, nil)
-
-	if err != nil {
-		log.Println("Error executing template :", err)
-	}
-
-	_, err = buffer.WriteTo(w)
+	_, err := buffer.WriteTo(w)
 
 	if err != nil {
 		log.Println("Error writing template to browser :", err)
 	}
 }
 
-func createTemplateCache() (map[string]*template.Template, error) {
+func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 
 	// Get all the files named *.html in the templates folder
