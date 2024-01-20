@@ -21,9 +21,14 @@ func noSurf(next http.Handler) http.Handler {
 	crfHandler.SetBaseCookie(http.Cookie{
 		HttpOnly: true,
 		Path:     "/",
-		Secure:   false,
+		Secure:   app.InProduction,
 		SameSite: http.SameSiteLaxMode,
 	})
 
 	return crfHandler
+}
+
+// SessionLoad loads and saves the session on every request
+func sessionLoad(next http.Handler) http.Handler {
+	return session.LoadAndSave(next)
 }
